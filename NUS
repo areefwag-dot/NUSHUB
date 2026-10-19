@@ -1,0 +1,54 @@
+-- โหลด UI Library (Rayfield UI)
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Delta Script Hub - เสกตัว/ของ/เงิน",
+   LoadingTitle = "กำลังโหลดสคริปต์...",
+   LoadingSubtitle = "by Delta User",
+   ConfigurationSaving = {
+      Enabled = false
+   }
+})
+
+-- Service ที่จำเป็น
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+----------------------------------------------------
+-- Tab 1: เสกเงิน & ค่าพลัง (Leaderstats)
+----------------------------------------------------
+local MoneyTab = Window:CreateTab("เสกเงิน", 4483362458)
+
+MoneyTab:CreateInput({
+   Name = "จำนวนเงินที่ต้องการเสก",
+   PlaceholderText = "ใส่จำนวนเงิน เช่น 99999",
+   RemoveTextOnFocusLost = false,
+   Callback = function(Text)
+      local amount = tonumber(Text)
+      if amount and LocalPlayer:FindFirstChild("leaderstats") then
+         -- ค้นหาค่าเงินใน leaderstats (เช่น Coins, Money, Cash, Gold)
+         for _, stat in pairs(LocalPlayer.leaderstats:GetChildren()) do
+            if stat:IsA("IntValue") or stat:IsA("NumberValue") then
+               stat.Value = amount
+            end
+         end
+         Rayfield:Notify({Title = "สำเร็จ", Content = "ปรับค่าเงินเป็น " .. Text .. " แล้ว (Visual)", Duration = 3})
+      end
+   end,
+})
+
+----------------------------------------------------
+-- Tab 2: เสกของ / อาวุธ (Tools)
+----------------------------------------------------
+local ItemTab = Window:CreateTab("เสกของ", 4483362458)
+
+ItemTab:CreateButton({
+   Name = "ดึงของทั้งหมดในเกมเข้ากระเป๋า (Get All Game Tools)",
+   Callback = function()
+      local count = 0
+      for _, obj in pairs(game:GetDescendants()) do
+         if obj:IsA("Tool") then
+            local clonedTool = obj:Clone()
+            clonedTool.Parent = LocalPlayer.Backpack
+            count = count + 1
+         end
